@@ -1,0 +1,10 @@
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\obj\Debug\ClientForSupport.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\bin\Debug\ClientForSupport.exe.config
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\bin\Debug\ClientForSupport.exe
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\bin\Debug\ClientForSupport.pdb
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\obj\Debug\ClientForSupport.exe
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\obj\Debug\ClientForSupport.pdb
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\obj\Debug\ClientForSupport.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\bin\Debug\Newtonsoft.Json.dll
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\bin\Debug\Newtonsoft.Json.xml
+C:\Users\admin\source\repos\ClientForSupport\ClientForSupport\obj\Debug\ClientForSupport.csproj.CopyComplete
