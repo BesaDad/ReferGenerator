@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClientForSupport.Models
 {
+    [Serializable]
     public class Refer
     {
         public string ClientName { get; set; }

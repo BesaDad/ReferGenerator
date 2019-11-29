@@ -18,79 +18,48 @@ namespace ClientForSupport
         {
             static HttpClient client = new HttpClient();
 
-
-
-
-            static async Task<bool> CreateRefer(Refer refer)
+            static async Task<bool> CallPostMethod(string method, string postString)
             {
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest) WebRequest.Create("http://localhost:50978/api/Support/CreateRefer");
+                    HttpWebRequest request = (HttpWebRequest) WebRequest.Create($"http://localhost:50978/Support/{method}/");
                     request.Method = "Post";
-              
-                    var json = JsonConvert.SerializeObject(refer);
-                        var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
-                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream());
-                await requestWriter.WriteAsync(refer.ToString());
+                    request.ContentType = "application/x-www-form-urlencoded";
+
+
+
+
+                    StreamWriter requestWriter = new StreamWriter(await request.GetRequestStreamAsync());
+                    requestWriter.Write(postString);
                     requestWriter.Close();
-                //var json = JsonConvert.SerializeObject(refer);
-                //    var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
-                //HttpResponseMessage response = await client.PostAsync(
-                //        "api/Support/CreateRefer/", stringContent);
-                //response.EnsureSuccessStatusCode();
+                    request.GetResponse().Close();
+
+
                 }
                 catch (Exception ex)
                 {
                     return false;
                 }
 
-                // return URI of the created resource.
                 return true;
             }
 
-            //static async Task<Refer> GetReferAsync(string path)
-            //{
-            //    Refer refer = null;
-            //    HttpResponseMessage response = await client.GetAsync(path);
-            //    if (response.IsSuccessStatusCode)
-            //    {
-            //        refer = await response.Content.ReadAsAsync<Refer>();
-            //    }
-            //    return refer;
-            //}
-
-            //static async Task<Refer> UpdateReferAsync(Refer refer)
-            //{
-            //    HttpResponseMessage response = await client.PutAsJsonAsync(
-            //        $"api/refers/{refer.Id}", refer);
-            //    response.EnsureSuccessStatusCode();
-
-            //    // Deserialize the updated refer from the response body.
-            //    refer = await response.Content.ReadAsAsync<Refer>();
-            //    return refer;
-            //}
-
-            //static async Task<HttpStatusCode> DeleteReferAsync(string id)
-            //{
-            //    HttpResponseMessage response = await client.DeleteAsync(
-            //        $"api/refers/{id}");
-            //    return response.StatusCode;
-            //}
+            
 
             static void Main()
             {
-                RunAsync();
-                //    TimerCallback timeCB = new TimerCallback(RunAsync);
-                //Timer t = new Timer(timeCB, null, 0, 2000);
+            var timerRefer = new Timer( async (object e)=>{
+                    await CreateReferAsync();
+                }, null, 0, 1000000);
 
-                ////Timer t = new Timer(RunAsync, 5, 0, 2000);
-                //    Console.WriteLine("Main thread: Doing other work here...");
-                //    Thread.Sleep(10000);
-            }
+                var timerWorker = new Timer(async (object e) => {
+                    await CreateWorkerAsync();
+                }, null, 0, 2000000);
+            Console.ReadLine();
+        }
 
-            static async void RunAsync()
+            static async Task CreateReferAsync()
             {
-                // Update port # in the following line.
                 client.BaseAddress = new Uri("http://localhost:50978/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
@@ -98,37 +67,23 @@ namespace ClientForSupport
 
                 try
                 {
+                    var ran = new Random();
+                    var ran_a = ran.Next(1, 100);
+                    var ran_b = ran.Next(10, 99);
                     // Create a new refer
                     Refer refer = new Refer
                     {
-                        ClientName = "Test",
-                        Email = "example_test@gmail.ru",
-                        Phone = "7999999999",
-                        ReferText = "Test text",
+                        ClientName = "Test" + ran_a,
+                        Email = $"example_test{ran_a}@gmail.ru",
+                        Phone = $"7999999{ran_b}{ran_b}",
+                        ReferText = $"Test text. {ran_a}!",
 
                     };
 
-                    var url = await CreateRefer(refer);
-                    Console.WriteLine($"Created at {url}");
-
-                // Get the refer
-               // refer = await GetReferAsync(url.PathAndQuery);
-               // ShowRefer(refer);
-
-               // Update the refer
-               //     Console.WriteLine("Updating price...");
-               // refer.Price = 80;
-               // await UpdateReferAsync(refer);
-
-               // Get the updated refer
-               //     refer = await GetReferAsync(url.PathAndQuery);
-               // ShowRefer(refer);
-
-               // Delete the refer
-               //var statusCode = await DeleteReferAsync(refer.Id);
-               // Console.WriteLine($"Deleted (HTTP Status = {(int)statusCode})");
-
-            }
+                string postString = string.Format("ClientName={0}&Email={1}&Phone={2}&ReferText={3}", refer.ClientName, refer.Email, refer.Phone, refer.ReferText);
+                var result = await CallPostMethod("CreateRefer", postString);
+                    Console.WriteLine($"Created? {result}!");
+                }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
@@ -136,6 +91,36 @@ namespace ClientForSupport
 
                 Console.ReadLine();
             }
-        }
+            static async Task CreateWorkerAsync()
+            {
+                client.BaseAddress = new Uri("http://localhost:50978/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+
+                try
+                {
+                    var ran = new Random();
+                    var ranName = ran.Next(1, 10000);
+                    var ranType = ran.Next(0, 2);
+                // Create a new refer
+                    Worker worker = new Worker()
+                    {
+                        Name = "TestWorker" + ranName,
+                        Type = ranType
+
+                    };
+                    string postString = string.Format("Name={0}&Type={1}", worker.Name, worker.Type);
+                    var result = await CallPostMethod("CreateEditWorker", postString);
+                    Console.WriteLine($"Created? {result}!");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+
+                Console.ReadLine();
+            }
+    }
 }
 
